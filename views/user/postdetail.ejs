@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post Detail</title>
+    <style>
+      #comment-section {
+        border: 1px solid red;
+        width: 80%;
+        margin: 0 auto;
+        display: block;
+        padding: 20px;
+      }
+      .comment-body {
+        margin-top: 10px;
+        border: 1px solid blue;
+        padding: 10px;
+      }
+      .reply-body {
+        margin-top: 10px;
+        border: 1px solid blue;
+        padding: 10px;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Post Detail</h1>
+    <p>Title : <%= post.title %></p>
+    <p>Content : <%= post.content %></p>
+    <p>Author : <%= post.author.name %></p>
+    <p>Created : <%= post.created %></p>
+    <p>Updated : <%= post.updated %></p>
+    <a href="/users/postupdate/<%= post._id %>"><button>Update</button></a>
+    <button onclick="delFun('<%= post._id %>')">Delete</button>
+    <div id="comment-section">
+      <% for(var i = 0; i < comments.length; i++){%>
+      <div class="comment-body">
+        <h3><%= comments[i].commenter.name %></h3>
+        <p><%= comments[i].comment %></p>
+      </div>
+      <% if(comments[i].reply){%>
+      <div class="reply-body">
+        <h3><%= post.author.name %></h3>
+        <p><%= comments[i].reply %></p>
+      </div>
+      <%}else{%>
+      <div class="reply-body">
+        <input type="hidden" value="<%= comments[i]._id %>" />
+        <h5>Reply</h5>
+        <textarea name="" class="reply" cols="40" rows="5"></textarea><br />
+        <button class="btnreply">Reply</button>
+      </div>
+      <%}%> <%}%>
+    </div>
+  </body>
+  <script src="/javascripts/jquery-3.7.0.min.js"></script>
+  <script>
+    function delFun(id) {
+      var opt = confirm("Are you sure for delete?");
+      if (opt) location.href = "/users/postdelete/" + id;
+    }
+    $(".btnreply").click(function () {
+      $.ajax("/users/givereply", {
+        method: "POST",
+        data: {
+          cid: $(this).parents()[0].children[0].value,
+          reply: $(this).parents()[0].children[2].value,
+        },
+        success: function (result) {
+          if (result.status) {
+            location.reload();
+          } else {
+            alert("Alert something was wrong");
+          }
+        },
+      });
+    });
+  </script>
+</html>
