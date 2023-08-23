@@ -28,7 +28,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+//remote DB
 mongoose.connect(
   "mongodb+srv://zikimi:zikimi@blogger006.2lzvyy4.mongodb.net/?retryWrites=true&w=majority"
 );
